@@ -1,16 +1,15 @@
-import { IsString, IsNotEmpty, IsNumber, Min } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
 export class CreateProductDto {
   @IsNotEmpty()
   @IsString()
-  name: string;
+  readonly name: string;
 
   @IsNotEmpty()
   @IsString()
-  description: string;
+  readonly description: string;
 
   @IsNotEmpty()
   @IsNumber()
-  @Min(0)
-  price: number;
+  readonly price: number;
 }

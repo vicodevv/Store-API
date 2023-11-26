@@ -1,14 +1,21 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AuthModule } from './modules/auth/auth.module';
 import { ProductsModule } from './modules/products/products.module';
-import * as dotenv from 'dotenv';
+import { UsersModule } from './modules/users/users.module';
 
-dotenv.config();
 @Module({
-  imports: [MongooseModule.forRoot(process.env.MONGODB_URI), ProductsModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot(),
+    MongooseModule.forRootAsync({
+      useFactory: async () => ({
+        uri: process.env.MONGODB_URI,
+      }),
+    }),
+    AuthModule,
+    ProductsModule,
+    UsersModule,
+  ],
 })
 export class AppModule {}
