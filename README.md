@@ -1,6 +1,6 @@
 # STORE API
 
-This is a REST API for a store. It allows users to register, login, create, update, delete and get products. It also allows users to get a single product. This API is built with NodeJS, NestJS and MongoDB
+This is a REST API for a store. It allows users to register, login, create, update, delete and get products. This API is built with NodeJS, NestJS and MongoDB.
 
 ## Technologies
 
@@ -53,7 +53,7 @@ Install dependencies
 Run the code
 
 ```bash
-  npm run dev
+  npm run start:dev
 ```
 
 ## Entity Relationship Diagram
@@ -71,20 +71,19 @@ This API uses JWT for authentication. To get a token, you need to register and l
 To run this project, you will need to add the following environment variables to your .env file
 
 - PORT=your port number
-- MONGO_URI=your mongodb uri
+- MONGODB_URI=your mongodb uri
 - JWT_SECRET=your jwt secret
 
 ## API Reference
 
-| Method | Description          | Endpoints          |
-| :----- | :------------------- | :----------------- |
-| POST   | Login a user         | /api/auth/login    |
-| POST   | Register a user      | /api/auth/register |
-| GET    | Get all products     | /api/products      |
-| GET    | Get a single product | /api/products/:id  |
-| POST   | Create a product     | /api/products      |
-| PUT    | Update a product     | /api/products/:id  |
-| DELETE | Delete a product     | /api/products/:id  |
+| Method | Description          | Endpoints        |
+| :----- | :------------------- | :--------------- |
+| POST   | Login a user         | /auth/login      |
+| POST   | Register a user      | /auth/register   |
+| POST   | Create a product     | /products/create |
+| GET    | Get all products     | /products/all    |
+| GET    | Get a single product | /products/:id    |
+| DELETE | Delete a product     | /products/:id    |
 
 ## Authors
 
