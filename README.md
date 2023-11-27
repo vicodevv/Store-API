@@ -64,6 +64,36 @@ To run tests, run the following command
   npm run test
 ```
 
+## Docker
+
+This application is Dockerized, allowing for easy deployment in containerized environments.
+
+### Pulling the Docker Image
+
+To run the application using Docker, follow these steps:
+
+#### Step 1: Install Docker
+
+Make sure you have Docker installed on your machine. If not, you can download it from [Docker's official website](https://www.docker.com/get-started).
+
+#### Step 2: Pull the Docker Image
+
+Open a terminal and run the following command to pull the Docker image from Docker Hub:
+
+```bash
+docker pull papivic0/store-api:latest
+```
+
+#### Step 3: Run the Docker Container
+
+After pulling the image, run the following command to start the Docker container:
+
+```bash
+docker run -p 3000:3000 papivic0/store-api:latest
+```
+
+The application will be available at http://localhost:3000.
+
 ## Entity Relationship Diagram
 
 <img src="https://github.com/vicodevv/Store-API/assets/55485439/b329e937-adc9-41a2-ac58-65e1beb3adff" width=800>
