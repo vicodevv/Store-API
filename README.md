@@ -60,11 +60,21 @@ Run the code
 
 ## Authentication
 
-This API uses JWT for authentication. To get a token, you need to register and login. The token is valid for 24 hours. You can use the token to access protected routes. To access authenticated routes, set your authorization header to Bearer [ token ]. Read postman documentation for further details
+This API uses JWT for authentication. To get a token, you need to register and login. The token is valid for 24 hours. You can use the token to access protected routes. To access authenticated routes, set your authorization header to Bearer [ token ]. Read postman documentation for further details.
 
 ## Postman Documentation
 
+You can access the postman documentation [here](https://documenter.getpostman.com/view/17026180/2s9YeEcC7e)
+
 ## Live Link
+
+The API is hosted on render. You can access it from:
+
+```bash
+https://store-api-3sne.onrender.com
+```
+
+Note: Due to the free tier of render, the API may be slow to respond on the first request. Subsequent requests will be faster.
 
 ## Environment Variables
 
@@ -84,6 +94,9 @@ To run this project, you will need to add the following environment variables to
 | GET    | Get all products     | /products/all    |
 | GET    | Get a single product | /products/:id    |
 | DELETE | Delete a product     | /products/:id    |
+| GET    | Get all users        | /users/all       |
+| GET    | Get a single user    | /users/:id       |
+| DELETE | Delete a user        | /users/:id       |
 
 ## Authors
 
