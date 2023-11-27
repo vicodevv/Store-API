@@ -1,10 +1,13 @@
+// Result class represents the result of an operation, either success or failure
 export class Result<T> {
   public isSuccess: boolean;
   public isFailure: boolean;
   public error: T | string;
   private _value: T;
 
+  // Constructor for Result class
   public constructor(isSuccess: boolean, error?: T | string, value?: T) {
+    // Validation checks for valid combinations of success and error
     if (isSuccess && error) {
       throw new Error(
         'InvalidOperation: A result cannot be successful and contain an error',
@@ -16,14 +19,17 @@ export class Result<T> {
       );
     }
 
+    // Set properties based on success or failure
     this.isSuccess = isSuccess;
     this.isFailure = !isSuccess;
     this.error = error;
     this._value = value;
 
+    // Freeze the object to make it immutable
     Object.freeze(this);
   }
 
+  // Get the value of a successful result
   public getValue(): T {
     if (!this.isSuccess) {
       console.log(this.error);
@@ -47,6 +53,7 @@ export class Result<T> {
     return new Result<U>(false, error);
   }
 
+  // Combine multiple results into a single result
   public static combine(results: Result<any>[]): Result<any> {
     for (const result of results) {
       if (result.isFailure) return result;
@@ -57,6 +64,7 @@ export class Result<T> {
 
 export type Either<L, A> = Left<L, A> | Right<L, A>;
 
+// Left class representing the left side of Either
 export class Left<L, A> {
   readonly value: L;
 
@@ -73,6 +81,7 @@ export class Left<L, A> {
   }
 }
 
+// Right class representing the right side of Either
 export class Right<L, A> {
   readonly value: A;
 
