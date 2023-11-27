@@ -1,23 +1,20 @@
-// import { ExtractJwt, Strategy } from 'passport-jwt';
-// import { PassportStrategy } from '@nestjs/passport';
-// import { Injectable } from '@nestjs/common';
-// import { UsersService } from '../../users/users.service';
+import { Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import * as dotenv from 'dotenv';
 
-// @Injectable()
-// export class JwtStrategy extends PassportStrategy(Strategy) {
-//   constructor(private readonly userService: UsersService) {
-//     super({
-//       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-//       ignoreExpiration: false,
-//       secretOrKey: process.env.JWT_SECRET,
-//     });
+dotenv.config();
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor() {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: process.env.JWT_SECRET,
+    });
+  }
 
-//     console.log('JwtStrategy constructor');
-//   }
-
-//   async validate(payload: any) {
-//     console.log('payload', payload);
-//     // Add custom validation logic here, e.g., fetching the user by ID from the database
-//     //return this.userService.findOne(payload.sub);
-//   }
-// }
+  async validate(payload: any) {
+    return { id: payload.id };
+  }
+}

@@ -67,6 +67,21 @@ export class ProductsService {
   }
 
   /**
+   * Update a product.
+   * @param id - The product's id.
+   * @param productData - The data to update the product.
+   * @returns {Promise<Product>} - The updated product, or null if not found.
+   */
+
+  async updateProduct(id: string, productData: Partial<any>): Promise<any> {
+    const updatedProduct = await this.productsRepo.findOneAndUpdate(
+      { _id: id },
+      productData,
+    );
+    return updatedProduct;
+  }
+
+  /**
    * Delete a product.
    * @param id - The product's id.
    * @returns {Promise<{ success: boolean }>} - An object containing a success boolean.

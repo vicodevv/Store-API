@@ -1,13 +1,13 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { User } from '../users/model/users.model';
+import { User } from '../user/model/user.model';
 import * as bcrypt from 'bcrypt';
-import { UsersRepo } from '../users/repository/users.repository';
-import { UserDomain } from '../users/domain/users';
-import { UserMap } from '../users/mappers/usersMap';
-import { createToken } from 'src/libs/utils/createToken';
+import { UserRepo } from '../user/repository/user.repository';
+import { UserDomain } from '../user/domain/user';
+import { UserMap } from '../user/mappers/userMap';
+import { createToken } from '../../libs/utils/createToken';
 @Injectable()
 export class AuthService {
-  constructor(@Inject('UsersRepo') private readonly usersRepo: UsersRepo) {}
+  constructor(@Inject('UserRepo') private readonly userRepo: UserRepo) {}
 
   /**
    * Register a new user
@@ -19,7 +19,7 @@ export class AuthService {
    * @throws BadRequestException - If user already exists
    */
   async register(firstName, lastName, email, password) {
-    const userExists = await this.usersRepo.exists({ email });
+    const userExists = await this.userRepo.exists({ email });
 
     if (userExists) {
       throw new BadRequestException('User already exists');
@@ -44,7 +44,7 @@ export class AuthService {
 
     const data = UserMap.toPersistence(newUser);
 
-    return this.usersRepo.save(data);
+    return this.userRepo.save(data);
   }
 
   /**
@@ -58,7 +58,7 @@ export class AuthService {
     email: string,
     password: string,
   ): Promise<{ token: string; user: User } | null> {
-    const user = await this.usersRepo.findOne({ email });
+    const user = await this.userRepo.findOne({ email });
 
     //Check if user exists
     if (!user) {

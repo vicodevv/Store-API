@@ -1,5 +1,5 @@
-import { UserDomain } from '../domain/users';
-import { User } from '../model/users.model';
+import { UserDomain } from '../domain/user';
+import { User } from '../model/user.model';
 
 export class UserMap {
   public static toPersistence(user: UserDomain): User {

@@ -1,7 +1,7 @@
-import { IsString, IsNotEmpty } from 'class-validator';
-import { BaseAggregateRoot } from 'src/libs/domain/utils/BaseAggregateRoot';
-import { Guard } from 'src/libs/domain/logic/Guard';
-import { Result } from 'src/libs/domain/logic/Result';
+import { IsString, IsNotEmpty, IsEmail } from 'class-validator';
+import { BaseAggregateRoot } from '../../../libs/domain/utils/BaseAggregateRoot';
+import { Guard } from '../../../libs/domain/logic/Guard';
+import { Result } from '../../../libs/domain/logic/Result';
 
 export interface UserProps {
   firstName: string;
@@ -21,6 +21,7 @@ export class UserValidation {
 
   @IsNotEmpty()
   @IsString()
+  @IsEmail()
   email: string;
 
   @IsNotEmpty()
