@@ -1,28 +1,86 @@
-import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
-import { Product } from './schemas/products.schema';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { ProductsRepo } from './repository/products.repository';
+import { ProductDomain } from './domain/products';
+import { ProductMap } from './mappers/productsMap';
 
 @Injectable()
 export class ProductsService {
   constructor(
-    @InjectModel(Product.name) private readonly productModel: Model<Product>,
+    @Inject('ProductsRepo') private readonly productsRepo: ProductsRepo,
   ) {}
 
-  async create(product: Product): Promise<Product> {
-    const createdProduct = new this.productModel(product);
-    return createdProduct.save();
+  /**
+   * Add a new product.
+   * @param name - The product's name.
+   * @param description - The product's description.
+   * @param price - The product's price.
+   * @returns {Promise<Product>} - The new product.
+   * @throws BadRequestException if product name is not provided.
+   */
+
+  async createProduct(name, description, price): Promise<any> {
+    const peoductExists = await this.productsRepo.exists({ name });
+    if (peoductExists) {
+      throw new BadRequestException('Product already exists');
+    }
+
+    const newProductError = ProductDomain.create({
+      name,
+      description,
+      price,
+    });
+
+    if (newProductError.isFailure) {
+      throw new BadRequestException(newProductError.errorValue());
+    }
+
+    const newProduct = newProductError.getValue();
+
+    const data = ProductMap.toPersistence(newProduct);
+
+    return this.productsRepo.save(data);
   }
 
-  async findAll(): Promise<Product[]> {
-    return this.productModel.find().exec();
+  /**
+   * Get all products.
+   * @returns {Promise<any>} - An array of products.
+   */
+  async getAllProducts(): Promise<any> {
+    const products = await this.productsRepo.findPaginated();
+    return products;
   }
 
-  async findOne(id: string): Promise<Product> {
-    return this.productModel.findById(id);
+  /**
+   * Get a product.
+   * @param id - The product's id.
+   * @returns {Promise<Product>} - The product.
+   * @throws BadRequestException if product id is not provided.
+   * @throws BadRequestException if product id is not found.
+   */
+
+  async getProduct(id: string): Promise<any> {
+    const product = await this.productsRepo.findOne({ _id: id });
+    if (!product) {
+      throw new BadRequestException(`Product with ID ${id} not found`);
+    }
+    return product;
   }
 
-  async delete(id: string): Promise<Product> {
-    return this.productModel.findByIdAndRemove(id);
+  /**
+   * Delete a product.
+   * @param id - The product's id.
+   * @returns {Promise<{ success: boolean }>} - An object containing a success boolean.
+   * @throws BadRequestException if product id is not provided.
+   * @throws BadRequestException if product id is not found.
+   */
+
+  async deleteProduct(id: string): Promise<{ success: boolean }> {
+    const deletedProduct = await this.productsRepo.findOneAndDelete({
+      _id: id,
+    });
+    if (deletedProduct) {
+      return { success: true };
+    }
+    return { success: false };
   }
 }

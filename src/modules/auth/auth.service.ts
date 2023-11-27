@@ -1,66 +1,86 @@
-import {
-  Injectable,
-  ConflictException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { User } from '../users/user.interface';
-import { LoginDto } from './dto/login.dto';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { User } from '../users/model/users.model';
 import * as bcrypt from 'bcrypt';
-
+import { UsersRepo } from '../users/repository/users.repository';
+import { UserDomain } from '../users/domain/users';
+import { UserMap } from '../users/mappers/usersMap';
+import { createToken } from 'src/libs/utils/createToken';
 @Injectable()
 export class AuthService {
-  constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(@Inject('UsersRepo') private readonly usersRepo: UsersRepo) {}
 
-  async validateUser(username: string, password: string): Promise<User> {
-    const user = await this.usersService.findByUsername(username);
-    if (user && (await this.verifyPassword(password, user.password))) {
-      return user;
+  /**
+   * Register a new user
+   * @param firstName
+   * @param lastName
+   * @param email
+   * @param password
+   * @returns {Promise<User>} - The newly created user
+   * @throws BadRequestException - If user already exists
+   */
+  async register(firstName, lastName, email, password) {
+    const userExists = await this.usersRepo.exists({ email });
+
+    if (userExists) {
+      throw new BadRequestException('User already exists');
     }
-    return null;
-  }
 
-  async login(user: User) {
-    const payload = { username: user.username, sub: user._id };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
-  }
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  async register(createUserDto: CreateUserDto) {
-    try {
-      const user = await this.usersService.create(createUserDto);
-      if (!user) {
-        throw new ConflictException('User already exists');
-      }
-      return { message: 'Registration successful' };
-    } catch (error) {
-      throw new ConflictException('User already exists');
+    // Create user
+    const newUserError = UserDomain.create({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+    });
+
+    if (newUserError.isFailure) {
+      throw new BadRequestException(newUserError.errorValue());
     }
+
+    const newUser = newUserError.getValue();
+
+    const data = UserMap.toPersistence(newUser);
+
+    return this.usersRepo.save(data);
   }
 
-  async loginWithCredentials(loginDto: LoginDto) {
-    const user = await this.usersService.findByUsername(loginDto.username);
-    if (user && (await this.verifyPassword(loginDto.password, user.password))) {
-      return this.login(user);
+  /**
+   * Login a user
+   * @param email
+   * @param password
+   * @returns {Promise<User>} - The logged in user
+   * @throws UnauthorizedException - If user does not exist or password is incorrect
+   */
+  async login(
+    email: string,
+    password: string,
+  ): Promise<{ token: string; user: User } | null> {
+    const user = await this.usersRepo.findOne({ email });
+
+    //Check if user exists
+    if (!user) {
+      throw new BadRequestException('User does not exist');
     }
-    throw new UnauthorizedException();
+
+    // Check if password is valid
+    const passwordMatch = await this.comparePassword(password, user.password);
+
+    if (!passwordMatch) {
+      throw new BadRequestException('Invalid email or password');
+    }
+
+    const token = createToken(user.id);
+    return { token, user };
   }
 
-  private async hashPassword(password: string): Promise<string> {
-    const saltRounds = 10;
-    return bcrypt.hash(password, saltRounds);
-  }
-
-  private async verifyPassword(
-    plainTextPassword: string,
-    hashedPassword: string,
+  // Helper function to compare password
+  private async comparePassword(
+    enteredPassword: string,
+    actualPassword: string,
   ): Promise<boolean> {
-    return bcrypt.compare(plainTextPassword, hashedPassword);
+    return bcrypt.compare(enteredPassword, actualPassword);
   }
 }
