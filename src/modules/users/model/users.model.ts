@@ -21,6 +21,8 @@ class UserModel {
       email: {
         type: String,
         required: true,
+        unique: true,
+        index: true, // For faster queries
       },
       password: {
         type: String,

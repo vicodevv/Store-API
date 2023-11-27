@@ -12,6 +12,8 @@ class ProductModel {
       name: {
         type: String,
         required: true,
+        unique: true,
+        index: true, // For faster queries
       },
       description: {
         type: String,
