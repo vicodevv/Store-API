@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 import { BaseAggregateRoot } from '../../../libs/domain/utils/BaseAggregateRoot';
 import { Guard } from '../../../libs/domain/logic/Guard';
 import { Result } from '../../../libs/domain/logic/Result';
@@ -6,7 +6,7 @@ import { Result } from '../../../libs/domain/logic/Result';
 export interface ProductProps {
   name: string;
   description: string;
-  price: string;
+  price: number;
 }
 
 export class ProductValidation {
@@ -19,8 +19,8 @@ export class ProductValidation {
   description: string;
 
   @IsNotEmpty()
-  @IsString()
-  price: string;
+  @IsNumber()
+  price: number;
 }
 
 export class ProductDomain extends BaseAggregateRoot<ProductProps> {
@@ -39,7 +39,7 @@ export class ProductDomain extends BaseAggregateRoot<ProductProps> {
     return this.props.description.replace(/[^a-zA-Z0-9\s]/g, '');
   }
 
-  get price(): string {
+  get price(): number {
     return this.props.price;
   }
 

@@ -3,7 +3,7 @@ import { Schema, model } from 'mongoose';
 export interface Product {
   name: string;
   description: string;
-  price: string;
+  price: number;
 }
 
 class ProductModel {
@@ -20,7 +20,7 @@ class ProductModel {
         required: true,
       },
       price: {
-        type: String,
+        type: Number,
         required: true,
       },
     },

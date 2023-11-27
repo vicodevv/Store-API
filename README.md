@@ -56,7 +56,17 @@ Run the code
   npm run start:dev
 ```
 
+## Testing
+
+To run tests, run the following command
+
+```bash
+  npm run test
+```
+
 ## Entity Relationship Diagram
+
+<img src="https://github.com/vicodevv/Store-API/assets/55485439/b329e937-adc9-41a2-ac58-65e1beb3adff" width=800>
 
 ## Authentication
 
@@ -86,17 +96,18 @@ To run this project, you will need to add the following environment variables to
 
 ## API Reference
 
-| Method | Description          | Endpoints        |
-| :----- | :------------------- | :--------------- |
-| POST   | Login a user         | /auth/login      |
-| POST   | Register a user      | /auth/register   |
-| POST   | Create a product     | /products/create |
-| GET    | Get all products     | /products/all    |
-| GET    | Get a single product | /products/:id    |
-| DELETE | Delete a product     | /products/:id    |
-| GET    | Get all users        | /users/all       |
-| GET    | Get a single user    | /users/:id       |
-| DELETE | Delete a user        | /users/:id       |
+| Method | Description                       | Endpoints            |
+| :----- | :-------------------------------- | :------------------- |
+| POST   | Login a user                      | /auth/login          |
+| POST   | Register a user                   | /auth/register       |
+| POST   | Create a product                  | /products/create     |
+| GET    | Get all products                  | /products/all        |
+| GET    | Get a single product              | /products/:id        |
+| DELETE | Delete a product                  | /products/delete/:id |
+| PUT    | Update a product                  | /products/update/:id |
+| GET    | Get the details of logged in user | /user/details        |
+| DELETE | Delete the logged in user         | /user/delete         |
+| PUT    | Update the loggged in user        | /user/update         |
 
 ## Authors
 
